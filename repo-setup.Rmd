@@ -1,0 +1,59 @@
+---
+title: "Setting Up Repository"
+output: html_notebook
+---
+
+*Created January 25, 2024 by Hana Moyle*
+
+Begin by connecting with SSH:
+
+```ssh
+ls -al ~/.ssh #checks to see if existing SSH keys are present
+```
+If 
+
+  - id_rsa/pub
+  - id_ecdsa.pub
+  - id_ed25519.pub
+  
+are not present, move on to generating a new SSH key or uploading an exisiting key.
+
+```ssh
+ssh-keygen -t ed25519 -C "hmoyle@ucsc.edu" #generates a public/private key pair
+eval "(ssh-agent -s)" #starts the ssh-agent in the background
+open ~/.ssh/config #checks to see if your config file exists at the default location
+touch ~/.ssh/config #create config file if one does not already exist
+```
+Open the config file and add:
+```
+Host github.com
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_ed25519
+```
+Add SSH private key to the ssh-agent and store passphase in the keychain(if you made one):
+```ssh
+ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+```
+Next, add the new SSH key to your github account:
+```ssh
+pbcopy < ~/.ssh/id_ed25519.pub # copies the contents to your clipboard
+```
+Go to settings on your GitHub account by clicking on your profile photo, then click on SSH and GPG keys under the Access section. Click New SSH key, add a descriptive title in the 'Title' field, and paste your public key(on your clipboard) to the 'Key' field. Click Add SSH key. 
+
+
+---
+Create repository:
+
+  - In GitHub, click on the '+' and choose New Repository. Choose a name, and set it to public. 
+  - In RStudio, create a new project making sure 'Create a git repository' is checked.
+  - In the Git tab, check off .gitignore and your .Rproj and commit with the comment "Initial commit".
+  - In the RStudio Terminal, enter the code that is suggested for an existing repository on your new repository on GitHub. It should look something like this:
+```ssh
+git remote add origin git@github.com:hmoyle/con-gen-csu-hmoyle.git
+git branch -M main
+git push -u origin main
+```
+
+You are now ready to go!
+
